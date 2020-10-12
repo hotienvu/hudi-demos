@@ -8,28 +8,19 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.streaming.*;
 
-class HoodieSparkDemo {
+abstract class HoodieSparkDemo {
   public HoodieConfig config;
 
   public HoodieSparkDemo(HoodieConfig config) {
     this.config = config;
   }
 
-  private static class SparkSessionHolder {
-    private static final SparkSession INSTANCE = SparkSession.builder()
-      .appName("hoodie multi-partition demo")
-      .master("local[2]")
-      .enableHiveSupport()
-      .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .getOrCreate();
-  }
+  abstract SparkSession sparkSession();
 
-  SparkSession spark() {
-    return SparkSessionHolder.INSTANCE;
-  }
+  abstract Dataset<Row> inputStream();
 
-  public void writeStream(Dataset<Row> input) {
-    DataStreamWriter<Row> writer = input.writeStream()
+  public void writeStream() {
+    DataStreamWriter<Row> writer = inputStream().writeStream()
       .format("hudi")
       .option("hoodie.insert.shuffle.parallelism", "2")
       .option("hoodie.upsert.shuffle.parallelism", "2")

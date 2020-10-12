@@ -35,6 +35,11 @@
             <artifactId>parquet-avro</artifactId>
             <version>1.10.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-utilities_${scala.binary.version}</artifactId>
+            <version>${hudi.version}</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.apache.hudi</groupId>-->
 <!--            <artifactId>hudi-hive-sync-bundle</artifactId>-->
