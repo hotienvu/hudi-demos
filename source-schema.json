@@ -1,0 +1,66 @@
+{
+  "type": "record",
+  "name": "topLevelRecord",
+  "fields": [
+    {
+      "name": "timestamp",
+      "type": [
+        {
+          "type": "long",
+          "logicalType": "timestamp-micros"
+        },
+        "null"
+      ]
+    },
+    {
+      "name": "value",
+      "type": [
+        "long",
+        "null"
+      ]
+    },
+    {
+      "name": "year",
+      "type": "int"
+    },
+    {
+      "name": "month",
+      "type": [
+        "int",
+        "null"
+      ]
+    },
+    {
+      "name": "day",
+      "type": [
+        "int",
+        "null"
+      ]
+    },
+    {
+      "name": "ts",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-micros"
+      }
+    },
+    {
+      "name": "id",
+      "type": [
+        "int",
+        "null"
+      ]
+    },
+    {
+      "name": "state",
+      "type": "string"
+    },
+    {
+      "name": "dt",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  ]
+}

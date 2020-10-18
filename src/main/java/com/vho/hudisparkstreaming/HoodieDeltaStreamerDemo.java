@@ -43,8 +43,8 @@ public class HoodieDeltaStreamerDemo {
    */
   public static void main(String[] args) throws IOException {
     HoodieDeltaStreamer.Config cfg = getConfig(args);
-    FileUtils.deleteDirectory(new File(inputPath));
-    FileUtils.deleteDirectory(new File(cfg.targetBasePath));
+//    FileUtils.deleteDirectory(new File(inputPath));
+//    FileUtils.deleteDirectory(new File(cfg.targetBasePath));
     Files.createDirectories(Paths.get(inputPath));
     Files.createDirectories(Paths.get(cfg.targetBasePath));
 
@@ -56,11 +56,11 @@ public class HoodieDeltaStreamerDemo {
       .getOrCreate();
 
     ExecutorService es = Executors.newFixedThreadPool(2);
-    Future<?> f1 = es.submit(() -> generateInput(spark));
-    Future<?> f2 = es.submit(() -> streamToHoodieTable(cfg, spark));
+    Future<?> read = es.submit(() -> generateInput(spark));
+    Future<?> write = es.submit(() -> streamToHoodieTable(cfg, spark));
     try {
-      f1.get();
-      f2.get();
+      read.get();
+      write.get();
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
       Thread.currentThread().interrupt();
@@ -100,7 +100,7 @@ public class HoodieDeltaStreamerDemo {
       .withColumn("month", expr("cast(rand(0)*2 as int) + 1"))
       .withColumn("day", expr("cast(rand(0)*3 as int) + 1"))
       .withColumn("ts", expr("current_timestamp()"))
-      .withColumn("dt", expr("cast(concat(year, '-', month, '-', day) as date)"))
+      .withColumn("dt", expr("concat(year, '-', month, '-', day)"))
       .withColumn("id", expr("cast(rand(0) * 10000 as int) + 1"))
       .withColumn("state", expr("if(cast(rand(0)*2 as int)  ==  0, 'Open', 'Closed') as state"));
 
@@ -111,7 +111,7 @@ public class HoodieDeltaStreamerDemo {
       .outputMode(OutputMode.Append())
       .trigger(Trigger.ProcessingTime("60 seconds"))
       // DeltaStreamer currently don't support directory partitioning
-      // .partitionBy("dt")
+       .partitionBy("dt")
       .start(inputPath);
 
     try {
